@@ -128,7 +128,3 @@
     @apply font-sans;
   }
 }
-
-body {
-  background-color: var(--primary);
-}

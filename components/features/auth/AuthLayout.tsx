@@ -12,7 +12,7 @@ export default function AuthLayout() {
   const [mode, setMode] = useState<"login" | "register">("login")
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
 
       <div className="w-full max-w-md space-y-6">
 
