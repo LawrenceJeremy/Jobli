@@ -68,6 +68,7 @@ export default function JobList({
             <p className="text-xs text-gray-500 mt-1">
               {job.workMode}
             </p>
+
           </div>
         );
       })}

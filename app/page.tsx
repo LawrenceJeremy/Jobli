@@ -4,6 +4,14 @@ import { useState } from "react";
 import JobList from "@/components/features/jobs/JobList";
 import JobPreview from "@/components/features/jobs/JobPreview";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 export type Job = {
   id: number;
   title: string;
@@ -38,6 +46,7 @@ const mockJobs: Job[] = [
 export default function Page() {
   const [selectedJob, setSelectedJob] = useState<Job>(mockJobs[0]);
   const [savedJobs, setSavedJobs] = useState<number[]>([]);
+  const [open, setOpen] = useState(false);
 
   const toggleSave = (jobId: number) => {
     setSavedJobs((prev) =>
@@ -50,17 +59,18 @@ export default function Page() {
   const [titleQuery, setTitleQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
 
+  // ✅ mobile detector (safe SSR-friendly)
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <div className="h-screen flex flex-col bg-gray-50">
 
-      {/* 🔍 SEARCH BAR */}
+      {/* 🔍 SEARCH BAR (UNCHANGED) */}
       <div className="w-full border-b bg-white py-6">
         <div className="max-w-4xl mx-auto flex justify-center px-4">
 
-          {/* RESPONSIVE CONTAINER */}
           <div className="flex flex-col md:flex-row w-full md:w-[720px] border rounded-xl overflow-hidden bg-white shadow-sm">
 
-            {/* TITLE INPUT */}
             <input
               value={titleQuery}
               onChange={(e) => setTitleQuery(e.target.value)}
@@ -68,10 +78,8 @@ export default function Page() {
               className="w-full md:flex-1 px-5 py-3 text-sm outline-none"
             />
 
-            {/* DIVIDER */}
             <div className="h-px md:w-px md:h-auto bg-gray-200" />
 
-            {/* LOCATION INPUT */}
             <input
               value={locationQuery}
               onChange={(e) => setLocationQuery(e.target.value)}
@@ -79,7 +87,6 @@ export default function Page() {
               className="w-full md:w-[200px] px-5 py-3 text-sm outline-none"
             />
 
-            {/* BUTTON */}
             <button className="bg-yellow-500 text-white px-6 py-3 text-sm hover:bg-yellow-600 transition w-full md:w-auto flex items-center justify-center">
               Search
             </button>
@@ -89,21 +96,28 @@ export default function Page() {
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* 🧱 MAIN CONTENT */}
       <div className="flex flex-1 overflow-hidden px-4 py-6 gap-4">
 
-        {/* LEFT */}
+        {/* LEFT LIST */}
         <div className="w-full md:w-1/2 border rounded-xl overflow-y-auto bg-white">
           <JobList
             jobs={mockJobs}
             selectedJob={selectedJob}
-            onSelectJob={setSelectedJob}
+            onSelectJob={(job) => {
+              setSelectedJob(job);
+
+              // ✅ ONLY OPEN MODAL ON MOBILE
+              if (window.innerWidth < 768) {
+                setOpen(true);
+              }
+            }}
             savedJobs={savedJobs}
             toggleSave={toggleSave}
           />
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT PREVIEW (DESKTOP ONLY - untouched) */}
         <div className="hidden md:block md:w-1/2 border rounded-xl overflow-y-auto bg-white">
           <JobPreview
             job={selectedJob}
@@ -113,6 +127,24 @@ export default function Page() {
         </div>
 
       </div>
+
+      {/* 📱 MOBILE MODAL ONLY */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="md:hidden max-w-2xl p-0 overflow-hidden rounded-2xl">
+
+          <VisuallyHidden>
+            <DialogTitle>Job Preview</DialogTitle>
+          </VisuallyHidden>
+
+          <JobPreview
+            job={selectedJob}
+            isSaved={savedJobs.includes(selectedJob.id)}
+            toggleSave={toggleSave}
+          />
+
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
