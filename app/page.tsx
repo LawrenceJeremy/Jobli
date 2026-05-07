@@ -3,6 +3,7 @@
 import { useState } from "react";
 import JobList from "@/components/features/jobs/JobList";
 import JobPreview from "@/components/features/jobs/JobPreview";
+import type { Job } from "@/components/features/jobs/shared/jobs.types";
 
 import {
   Dialog,
@@ -11,16 +12,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-
-export type Job = {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  workMode: "Remote" | "On-site" | "Hybrid";
-  salary?: string;
-  description: string;
-};
 
 const mockJobs: Job[] = [
   {
@@ -59,13 +50,10 @@ export default function Page() {
   const [titleQuery, setTitleQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
 
-  // ✅ mobile detector (safe SSR-friendly)
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
   return (
     <div className="h-screen flex flex-col bg-gray-50">
 
-      {/* 🔍 SEARCH BAR (UNCHANGED) */}
+      {/* SEARCH */}
       <div className="w-full border-b bg-white py-6">
         <div className="max-w-4xl mx-auto flex justify-center px-4">
 
@@ -96,10 +84,9 @@ export default function Page() {
         </div>
       </div>
 
-      {/* 🧱 MAIN CONTENT */}
+      {/* MAIN */}
       <div className="flex flex-1 overflow-hidden px-4 py-6 gap-4">
 
-        {/* LEFT LIST */}
         <div className="w-full md:w-1/2 border rounded-xl overflow-y-auto bg-white">
           <JobList
             jobs={mockJobs}
@@ -107,7 +94,6 @@ export default function Page() {
             onSelectJob={(job) => {
               setSelectedJob(job);
 
-              // ✅ ONLY OPEN MODAL ON MOBILE
               if (window.innerWidth < 768) {
                 setOpen(true);
               }
@@ -117,7 +103,6 @@ export default function Page() {
           />
         </div>
 
-        {/* RIGHT PREVIEW (DESKTOP ONLY - untouched) */}
         <div className="hidden md:block md:w-1/2 border rounded-xl overflow-y-auto bg-white">
           <JobPreview
             job={selectedJob}
@@ -128,7 +113,7 @@ export default function Page() {
 
       </div>
 
-      {/* 📱 MOBILE MODAL ONLY */}
+      {/* MOBILE MODAL */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="md:hidden max-w-2xl p-0 overflow-hidden rounded-2xl">
 

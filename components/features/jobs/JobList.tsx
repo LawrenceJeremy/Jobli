@@ -1,4 +1,4 @@
-import { Job } from "@/app/page";
+import type { Job } from "./shared/jobs.types";
 import { Bookmark } from "lucide-react";
 
 type Props = {
