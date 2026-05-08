@@ -1,5 +1,4 @@
 "use client"
-// components/features/auth/AuthLayout.tsx
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,19 +15,20 @@ export default function AuthLayout() {
 
       <div className="w-full max-w-md space-y-6">
 
-        {/* 🌟 Brand Section */}
+        {/* BRAND */}
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">
             Jobli
           </h1>
 
           <p className="text-sm text-muted-foreground">
-            Your simple job application companion — find, apply, and manage opportunities in one place.
+            Your simple job application companion
           </p>
         </div>
 
-        {/* 🧩 Auth Card */}
+        {/* CARD (PURE CONTAINER ONLY) */}
         <Card className="shadow-lg">
+
           <CardHeader className="text-center space-y-1">
             <CardTitle>
               {mode === "login" ? "Welcome Back" : "Create Account"}
@@ -41,8 +41,13 @@ export default function AuthLayout() {
             </p>
           </CardHeader>
 
+          {/* IMPORTANT: NO HEIGHT CONTROL HERE */}
           <CardContent>
-            {mode === "login" ? <LoginForm /> : <RegisterForm />}
+
+            {mode === "login"
+              ? <LoginForm />
+              : <RegisterForm />
+            }
 
             <Button
               variant="link"
@@ -55,7 +60,9 @@ export default function AuthLayout() {
                 ? "No account? Sign up"
                 : "Already have an account? Sign in"}
             </Button>
+
           </CardContent>
+
         </Card>
 
       </div>
